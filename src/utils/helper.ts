@@ -23,3 +23,12 @@ export const editProfileValidator = [
     body('email', 'email is required').notEmpty(),
     body('email', 'Invalid email').isEmail()
 ]
+
+export const addMovieValidator = [
+    body('title','title is required').notEmpty(),
+    body('description','description is required').notEmpty(),
+    body('director','director is required').notEmpty(),
+    body('year','year is required').notEmpty(),
+    body('rating','rating is required').notEmpty(),
+    body('cast','cast is required').notEmpty()
+]

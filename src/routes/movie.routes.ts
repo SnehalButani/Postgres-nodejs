@@ -1,8 +1,8 @@
-import { editProfile, getAllUser, removeUser, signIn, signup } from '../controller/UserController';
-import { loginValidator, signupValidator, editProfileValidator, verifyToken } from '../utils/main'
 import * as express from 'express'
+import { addMovieData, getAllmovies } from '../controller/MovieController';
 import * as multer from 'multer'
 import * as fs from 'fs'
+import { addMovieValidator } from '../utils/helper';
 
 
 const router = express.Router();
@@ -21,11 +21,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get('/alluser',getAllUser);
-router.post('/signup', upload.single('image'), signupValidator, signup);
-router.post('/login', loginValidator, signIn);
-router.put('/editprofile', verifyToken, upload.single('image'), editProfileValidator, editProfile);
-router.delete('/removeUser',verifyToken, editProfileValidator, removeUser);
-
+router.get('/allmovies', getAllmovies);
+router.post('/addmovies', upload.single('image'), addMovieValidator, addMovieData);
 
 export default router;

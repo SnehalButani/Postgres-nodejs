@@ -21,7 +21,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
             });
         }
 
-        const user = userRepository.create({ ...req.body, image: req.file.path } as object)
+        const user = userRepository.create({ ...req.body, image: req.file ? req.file.path : '' } as object)
         const result = await userRepository.save(user);
 
         const token = jwtToken({ email: req.body.email });
@@ -100,13 +100,32 @@ export const removeUser = async (req: Request, res: Response, next: NextFunction
                 errors: errorMessages
             });
         }
-        
-        const result = await userRepository.delete({email : req.body.email});
-        if(result.affected == 0) return res.status(404).json({message:"User not found"});
+
+        const result = await userRepository.delete({ email: req.body.email });
+        if (result.affected == 0) return res.status(404).json({ message: "User not found" });
 
         return res.status(200).json({
             message: "Delete Successfully"
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getAllUser =  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await userRepository.find();
+
+        // const result = await userRepository.find({
+        //     select:{
+        //         firstName:true
+        //     }
+        // });
+
+        return res.status(200).json({
+            data:_.map(result, user => _.omit(user, ['password']))
+        })
+        
     } catch (error) {
         next(error)
     }
