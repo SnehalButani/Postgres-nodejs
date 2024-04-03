@@ -1,8 +1,9 @@
 import { editProfile, removeUser, signIn, signup } from '../controller/UserController';
-import { editProfileValidator, loginValidator, signupValidator } from '../utils/helper'
+import { loginValidator, signupValidator, editProfileValidator, verifyToken } from '../utils/main'
 import * as express from 'express'
 import * as multer from 'multer'
 import * as fs from 'fs'
+
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -13,7 +14,7 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + Math.round(Math.random() * 1E9) + '.' +
-         file.originalname.split('.')[1];
+            file.originalname.split('.')[1];
         cb(null, uniqueSuffix)
     }
 });
@@ -21,11 +22,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-router.post('/signup',upload.single('image'),signupValidator,signup);
+router.post('/signup', upload.single('image'), signupValidator, signup);
 router.post('/login', loginValidator, signIn);
-router.put('/editprofile',upload.single('image'),editProfileValidator,editProfile);
-router.delete('/removeUser',editProfileValidator,removeUser);
+router.put('/editprofile', verifyToken, upload.single('image'), editProfileValidator, editProfile);
+router.delete('/removeUser',verifyToken, editProfileValidator, removeUser);
 
 
 export default router;
-  
