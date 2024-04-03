@@ -2,13 +2,17 @@ import "./data-source"
 import * as express from "express"
 import * as bodyParser from "body-parser"
 import { Request, Response, NextFunction } from "express"
-import userRoutes from './routes/user.routes';
+import userRoutes from './routes/user.routes';3
+import * as path from 'path'
 
 const app = express();
 
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/uploads",express.static(path.join(__dirname,'..','uploads')));
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err);
     res.status(500).json({ message: err.message ?? "something is wrong" });

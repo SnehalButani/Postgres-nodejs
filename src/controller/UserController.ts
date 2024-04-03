@@ -12,7 +12,6 @@ const jwtToken = (payload: object) => jwt.sign(payload, "postgresnodejs")
 
 
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
-    
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -22,14 +21,14 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
             });
         }
 
-        const user = userRepository.create(req.body as any)
+        const user = userRepository.create({ ...req.body, image: req.file.path } as object)
         const result = await userRepository.save(user);
 
         const token = jwtToken({ email: req.body.email });
 
         return res.status(200).json({
             message: "user Successfully",
-            data: _.omit(result,["password"]),
+            data: _.omit(result, ["password"]),
             token: token
         })
 
@@ -59,8 +58,33 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
 
         res.status(200).json({
             message: "Login Successfully",
-            data: _.omit(user,["password"]),
-            token:token
+            data: _.omit(user, ["password"]),
+            token: token
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const editProfile = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => error.msg);
+            return res.status(400).json({
+                errors: errorMessages
+            });
+        }
+
+        const user = await userRepository.findOneBy({ email: req.body.email });
+
+        userRepository.merge(user, { ...req.body, image: req.file ? req.file.path : user.image });
+
+        const result = await userRepository.save(user);
+
+        return res.status(200).json({
+            message: "Edit profile Successfully",
+            data: _.omit(result, ['password'])
         })
     } catch (error) {
         next(error)
