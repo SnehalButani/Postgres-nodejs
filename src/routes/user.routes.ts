@@ -1,4 +1,4 @@
-import { editProfile, signIn, signup } from '../controller/UserController';
+import { editProfile, removeUser, signIn, signup } from '../controller/UserController';
 import { editProfileValidator, loginValidator, signupValidator } from '../utils/helper'
 import * as express from 'express'
 import * as multer from 'multer'
@@ -24,6 +24,7 @@ const upload = multer({ storage: storage });
 router.post('/signup',upload.single('image'),signupValidator,signup);
 router.post('/login', loginValidator, signIn);
 router.put('/editprofile',upload.single('image'),editProfileValidator,editProfile);
+router.delete('/removeUser',editProfileValidator,removeUser);
 
 
 export default router;

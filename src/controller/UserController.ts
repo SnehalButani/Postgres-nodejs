@@ -91,3 +91,23 @@ export const editProfile = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
+export const removeUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => error.msg);
+            return res.status(400).json({
+                errors: errorMessages
+            });
+        }
+        
+        const result = await userRepository.delete({email : req.body.email});
+        if(result.affected == 0) return res.status(404).json({message:"User not found"});
+
+        return res.status(200).json({
+            message: "Delete Successfully"
+        })
+    } catch (error) {
+        next(error)
+    }
+}
