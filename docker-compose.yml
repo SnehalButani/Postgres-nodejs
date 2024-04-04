@@ -1,0 +1,12 @@
+version: '3'
+services:
+
+  postgres:
+    image: "postgres:14.5"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "localhost"
+      POSTGRES_PASSWORD: "12345"
+      POSTGRES_DB: "sql_demo"
+
