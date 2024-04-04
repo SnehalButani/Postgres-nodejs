@@ -43,9 +43,9 @@ export const getAllmovies = async (req: Request, res: Response, next: NextFuncti
         //     }
         // });
 
-        const result = await  movieRepository.createQueryBuilder("movies").leftJoinAndSelect("movies.user","user").getMany();
+        // const result = await  movieRepository.createQueryBuilder("movies").leftJoinAndSelect("movies.user","user").getMany();
 
-
+        const result = await  movieRepository.find();
         return res.status(200).json({
             data: _.map(result, ele => _.omit(ele, ["user.password"]))
             // data:result

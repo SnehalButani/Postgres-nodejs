@@ -36,7 +36,9 @@ export class Movies {
     @Column({ nullable: false })
     cast: string;
 
-    @OneToOne(() => User, (user) => user.movies)
+    @OneToOne(() => User, (user) => user.movies,{
+        eager:true
+    })
     @JoinColumn()
     user: User
 

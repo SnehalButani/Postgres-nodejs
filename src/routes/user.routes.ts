@@ -1,4 +1,4 @@
-import { editProfile, getAllUser, removeUser, signIn, signup } from '../controller/UserController';
+import { editProfile, findByName, getAllUser, removeUser, signIn, signup } from '../controller/UserController';
 import { loginValidator, signupValidator, editProfileValidator, verifyToken } from '../utils/main'
 import * as express from 'express'
 import * as multer from 'multer'
@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get('/alluser',getAllUser);
+router.get('/findbyname/:firstName/:email',findByName);
 router.post('/signup', upload.single('image'), signupValidator, signup);
 router.post('/login', loginValidator, signIn);
 router.put('/editprofile', verifyToken, upload.single('image'), editProfileValidator, editProfile);

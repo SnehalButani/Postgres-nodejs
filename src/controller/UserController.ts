@@ -5,8 +5,16 @@ import * as bcrypt from 'bcrypt'
 import * as jwt from "jsonwebtoken";
 import * as _ from 'lodash'
 import { validationResult } from "express-validator";
+import { LessThan } from "typeorm";
 
-const userRepository = AppDataSource.getRepository(User);
+const userRepository = AppDataSource.getRepository(User).extend({
+    findByName(firstName: string, email: string) {
+        return this.createQueryBuilder("users")
+            .where("users.firstName = :firstName", { firstName })
+            .andWhere("users.email = :email", { email })
+            .getMany()
+    }
+});
 
 const jwtToken = (payload: object) => jwt.sign(payload, "postgresnodejs")
 
@@ -112,21 +120,41 @@ export const removeUser = async (req: Request, res: Response, next: NextFunction
     }
 }
 
-export const getAllUser =  async (req: Request, res: Response, next: NextFunction) => {
+export const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const result = await userRepository.find();
+        // const result = await userRepository.find();
 
         // const result = await userRepository.find({
-        //     select:{
-        //         firstName:true
-        //     }
+        //     where: [
+        //         { email: "test1@gmail.com" },
+        //         { role: "admin" }
+        //     ]
         // });
 
+        const result = await userRepository.findBy({
+            age: LessThan(50)
+        });
+
         return res.status(200).json({
-            data:_.map(result, user => _.omit(user, ['password']))
+            data: _.map(result, user => _.omit(user, ['password']))
         })
-        
+
     } catch (error) {
         next(error)
     }
 }
+
+export const findByName = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { firstName, email } = req.params;
+
+        const user = await userRepository.findByName(firstName, email);
+
+        res.status(200).json({ data: user })
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+

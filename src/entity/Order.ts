@@ -2,7 +2,7 @@ import { CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGener
 import { User } from "./User";
 import { Movies } from "./Movies";
 
-@Entity()
+@Entity({name:'bookingOrder'})
 export class bookingOrder {
 
     @PrimaryGeneratedColumn()
@@ -20,5 +20,5 @@ export class bookingOrder {
 
     @UpdateDateColumn()
     updatedAt: Date;
-    
+
 }
