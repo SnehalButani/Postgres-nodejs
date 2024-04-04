@@ -7,6 +7,7 @@ import {
     UpdateDateColumn,
 } from "typeorm";
 import { User } from './User'
+import { bookingOrder } from "./Order";
 
 
 @Entity({ name: 'movies' })
@@ -35,9 +36,13 @@ export class Movies {
     @Column({ nullable: false })
     cast: string;
 
-    @OneToOne(() => User)
+    @OneToOne(() => User, (user) => user.movies)
     @JoinColumn()
     user: User
+
+    @OneToOne(() => bookingOrder, (booking) => booking.movie)
+    @JoinColumn()
+    booking: bookingOrder
 
     @CreateDateColumn()
     createdAt: Date;

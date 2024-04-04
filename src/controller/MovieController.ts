@@ -31,20 +31,24 @@ export const addMovieData = async (req: Request, res: Response, next: NextFuncti
 
 export const getAllmovies = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const result = await movieRepository.find({
-            select: {
-                title: true,
-                // user: {
-                //     firstName: true
-                // }
-            },
-            relations: {
-                user: true
-            }
-        });
+        // const result = await movieRepository.find({
+        //     select: {
+        //         title: true,
+        //         // user: {
+        //         //     firstName: true
+        //         // }
+        //     },
+        //     relations: {
+        //         user: true
+        //     }
+        // });
+
+        const result = await  movieRepository.createQueryBuilder("movies").leftJoinAndSelect("movies.user","user").getMany();
+
 
         return res.status(200).json({
             data: _.map(result, ele => _.omit(ele, ["user.password"]))
+            // data:result
         })
 
     } catch (error) {

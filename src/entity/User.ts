@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn, BeforeUpdate, BeforeInsert } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn, BeforeUpdate, BeforeInsert, OneToOne, JoinColumn, OneToMany } from "typeorm"
 import * as bcrypt from "bcrypt";
+import { Movies } from "./Movies";
+import { bookingOrder } from "./Order";
 
 
 @Entity({ name: 'users' })
@@ -34,6 +36,13 @@ export class User {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToOne(() => Movies, (movies) => movies.user)
+    @JoinColumn()
+    movies: Movies
+
+    @OneToMany(() => bookingOrder, (booking) => booking.user)
+    booking: bookingOrder[]
 
     @BeforeInsert()
     @BeforeUpdate()
